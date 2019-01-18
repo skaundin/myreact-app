@@ -1,25 +1,40 @@
-import React, { Component } from 'react';
-import Radium, { StyleRoot } from 'radium';
-import './App.css';
+import React, { PureComponent } from 'react';
+import classes from './App.css';
 import Persons from '../components/Persons/Persons';
-import '../components/Persons/Person/Person.css';
-import cockpit from '../components/Cockpit/Cockpit';
+import Cockpit from '../components/Cockpit/Cockpit';
 
 
-class App extends Component {
-  state = {
-    persons: [
-    { id:'asdd' , name: 'Max', age:28},
-    {id: 'bnkk' , name: 'Manu', age:29},
-    {id: 'jhgr' , name: 'Stephanie', age:26}
-    ],
-
-    showPerson: false
+class App extends PureComponent {
+  constructor(props){
+    super(props);
+    console.log('App.js - Inside constructor')
+    this.state = {
+      persons: [
+      { id:'asdd' , name: 'Max', age:28},
+      {id: 'bnkk' , name: 'Manu', age:29},
+      {id: 'jhgr' , name: 'Stephanie', age:26}
+      ],
+      otherState: 'some other value',
+      showPersons: false
+    }
+  }
+    componentWillMount(){
+      console.log('App.js: Inside Component will mount')
   }
 
-  togglePersonHandler = () => {
-    const doNotShow = this.state.showPerson;
-    this.setState({showPerson: !doNotShow})
+  componentDidMount(){
+    console.log("App.js: Inside Component did mount")
+  }
+
+
+	componentWillUpdate(nextProps, nextState){
+		console.log("Appjs: Inside component will update  ",nextProps, nextState)
+	}
+
+
+  togglePersonsHandler = () => {
+    const doesShow = this.state.showPersons;
+    this.setState({showPersons: !doesShow})
   }
 
   nameChangeHandler = (event, id ) =>{
@@ -43,47 +58,28 @@ class App extends Component {
   }
   
   render() {
-    const style = {
-      backgroundColor:'green',
-      color:"white",
-      font: 'inherit',
-      border: '1px solid blue',
-      padding: '8px',
-      cursor: 'pointer',
-      ':hover': {
-        backgroundColor: 'lightgreen',
-        color: 'black'
-      }
-    };
-
+    console.log("In render method")
     let persons = null;
-    if(this.state.showPerson){
-      persons = (
-        <div>
-        <Persons 
-          persons = { this.state.persons}
-          clicked = {this.deletePersonHandler}
-          changed = {this.nameChangeHandler} />
-      </div>
-      );
-      style.backgroundColor = "red";
-      style['.hover'] = {
-        backgroundColor: 'salmon',
-        color: 'black'
-      }
-    }
+    if(this.state.showPersons){
+      persons = <Persons
+      
+        persons = { this.state.persons}
+        clicked = {this.deletePersonHandler}
+        changed = {this.nameChangeHandler} />;
+  }
+      
     return (
-      <StyleRoot>
         <div className={classes.App}>
-        <cockpit
+        <button onClick={() => {this.setState({showPersons : true})}}>Show Persons</button>
+        <Cockpit
           showPersons={this.state.showPersons}
-          persons={this.state.persons} />
+          persons={this.state.persons} 
+          clicked = {this.togglePersonsHandler}/>
         {persons}
         </div>
-      </StyleRoot>
     );
     //return React.createElement('div', {className:'App'}, 'h1', React.createElement('div',null,'Does this work now'))
   }
 }
 
-export default Radium(App);
+export default App;
